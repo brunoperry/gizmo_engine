@@ -1,0 +1,36 @@
+[package]
+name = "gizmo_engine"
+version = "0.1.0"
+authors = ["bruno perry <brunoperry@gmail.com>"]
+edition = "2018"
+
+[lib]
+crate-type = ["cdylib"]
+
+[dependencies] 
+console_error_panic_hook = "0.1.6"
+js-sys = "0.3.37"
+lazy_static = "1.4.0"
+nalgebra = "0.21.0"
+wasm-bindgen = { version = "0.2.60", features = ["serde-serialize"]  }
+wasm-bindgen-futures = "0.4.10"
+serde = { version = "1.0.80", features = ["derive"] }
+serde_derive = "^1.0.59"
+serde_json = "1.0.51"
+rand = "0.7.3"
+
+
+[dependencies.web-sys]
+version = "0.3.4"
+features = [
+    "Document",
+    "Element",
+    "EventTarget",
+    "HtmlCanvasElement",
+    "CanvasRenderingContext2d",
+    "MouseEvent",
+    "Window",
+    "ImageData",
+    "ImageBitmap",
+]
+

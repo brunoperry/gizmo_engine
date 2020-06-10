@@ -1,0 +1,22 @@
+{
+    "textures": [
+        
+    ],
+    "audio": [
+         
+    ],
+    "objects": [
+        {
+            "id": 0,
+            "extension": "obj",
+            "name": "gear",
+            "url": "meshes/gear.obj"
+        },
+        {
+            "id": 1,
+            "extension": "obj",
+            "name": "cube",
+            "url": "meshes/cube.obj"
+        }
+    ]
+}                     
