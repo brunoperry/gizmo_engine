@@ -14,19 +14,18 @@ impl Edge {
         let ys = min_y_vert.get_y().ceil() as i32;
         let ye = max_y_vert.get_y().ceil() as i32;
 
-        let y_dist = max_y_vert.get_y() - min_y_vert.get_y();
-        let x_dist = max_y_vert.get_x() - min_y_vert.get_x();
+        let y_dist: f64 = max_y_vert.get_y() - min_y_vert.get_y();
+        let x_dist: f64 = max_y_vert.get_x() - min_y_vert.get_x();
 
-        let y_pre_step = (ys as f64) - min_y_vert.get_y();
-
-        let xs = x_dist / y_dist;
-        let xx = min_y_vert.get_x() + y_pre_step * xs;
+        let xs: f64 = x_dist / y_dist;
+        let yp: f64 = ys as f64 - min_y_vert.get_y();
+        let xx: f64 = min_y_vert.get_x() + yp * xs;
 
         Self {
+            x: xx,
+            x_step: xs,
             y_start: ys,
             y_end: ye,
-            x_step: xs,
-            x: xx,
         }
     }
 
@@ -34,14 +33,13 @@ impl Edge {
         self.x += self.x_step;
     }
 
-    pub fn get_x(self) -> f64 {
+    pub fn get_x(&self) -> f64 {
         self.x
     }
-    pub fn get_y_start(self) -> i32 {
+    pub fn get_y_start(&self) -> i32 {
         self.y_start
     }
-
-    pub fn get_y_end(self) -> i32 {
+    pub fn get_y_end(&self) -> i32 {
         self.y_end
     }
 
@@ -50,11 +48,11 @@ impl Edge {
         let data: String = [
             "x: ",
             &self.x.to_string()[..],
-            "\ny: ",
+            "\nx_step: ",
             &self.x_step.to_string()[..],
-            "\nz: ",
+            "\ny_start: ",
             &self.y_start.to_string()[..],
-            "\nw: ",
+            "\ny_end: ",
             &self.y_end.to_string()[..],
         ]
         .concat();

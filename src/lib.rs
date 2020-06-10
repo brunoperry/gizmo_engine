@@ -39,7 +39,7 @@ impl Client {
     pub fn new(resources_data: JsValue) -> Self {
         Self {
             renderer: Renderer::new(),
-            rot_counter: 1.,
+            rot_counter: 2.5,
             triangle: Triangle::new(
                 Vertex::new(Vector4::new(-1., -1., 0., 1.)),
                 Vertex::new(Vector4::new(0., 1., 0., 1.)),
@@ -60,6 +60,8 @@ impl Client {
         );
 
         self.rot_counter += 0.03;
+
+        // log(&self.rot_counter.to_string()[..]);
 
         let translation: Matrix4 = Matrix4::init_translation(0., 0., 3.);
         let rotation: Matrix4 = Matrix4::init_rotation(0., self.rot_counter, 0.);
