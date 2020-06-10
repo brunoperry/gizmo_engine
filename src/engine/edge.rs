@@ -11,8 +11,8 @@ pub struct Edge {
 
 impl Edge {
     pub fn new(min_y_vert: Vertex, max_y_vert: Vertex) -> Self {
-        let ys = min_y_vert.get_y() as i32;
-        let ye = max_y_vert.get_y() as i32;
+        let ys = min_y_vert.get_y().ceil() as i32;
+        let ye = max_y_vert.get_y().ceil() as i32;
 
         let y_dist = max_y_vert.get_y() - min_y_vert.get_y();
         let x_dist = max_y_vert.get_x() - min_y_vert.get_x();
@@ -43,5 +43,22 @@ impl Edge {
 
     pub fn get_y_end(self) -> i32 {
         self.y_end
+    }
+
+    #[allow(dead_code)]
+    pub fn to_string(&self) -> String {
+        let data: String = [
+            "x: ",
+            &self.x.to_string()[..],
+            "\ny: ",
+            &self.x_step.to_string()[..],
+            "\nz: ",
+            &self.y_start.to_string()[..],
+            "\nw: ",
+            &self.y_end.to_string()[..],
+        ]
+        .concat();
+
+        data
     }
 }

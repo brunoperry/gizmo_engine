@@ -71,6 +71,12 @@ impl Client {
             &mut self.triangle.min_y_vert.transform(transform.clone()),
         );
 
+        // self.renderer.fill_triangle(
+        //     &mut self.triangle.max_y_vert.transform(transform.clone()),
+        //     &mut self.triangle.mid_y_vert.transform(transform.clone()),
+        //     &mut self.triangle.min_y_vert.transform(transform.clone()),
+        // );
+
         self.renderer.render();
     }
 

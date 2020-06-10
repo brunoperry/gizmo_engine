@@ -36,11 +36,11 @@ impl Vertex {
     }
 
     pub fn triangle_area_times_two(&self, b: Vertex, c: Vertex) -> f64 {
-        let x1 = b.pos.x - self.pos.x;
-        let y1 = b.pos.y - self.pos.y;
+        let x1 = b.get_x() - self.pos.x;
+        let y1 = b.get_y() - self.pos.y;
 
-        let x2 = c.pos.x - self.pos.x;
-        let y2 = c.pos.y - self.pos.y;
+        let x2 = c.get_x() - self.pos.x;
+        let y2 = c.get_y() - self.pos.y;
 
         x1 * y2 - x2 * y1
     }
@@ -62,13 +62,13 @@ impl Vertex {
     pub fn to_string(&self) -> String {
         let data: String = [
             "x: ",
-            &self.pos.x.to_string()[..],
+            &self.get_x().to_string()[..],
             "\ny: ",
-            &self.pos.y.to_string()[..],
+            &self.get_y().to_string()[..],
             "\nz: ",
-            &self.pos.z.to_string()[..],
+            &self.get_z().to_string()[..],
             "\nw: ",
-            &self.pos.w.to_string()[..],
+            &self.get_w().to_string()[..],
         ]
         .concat();
 
