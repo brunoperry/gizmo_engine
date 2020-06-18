@@ -55,4 +55,9 @@ const setupEvents = () => {
     document.querySelector("#clear").addEventListener("click", (e) => {
         gizmoClient.clear(0x00);
     });
+
+    // document.querySelector("canvas").addEventListener("mousemove", (e) => {
+    // console.log(e.offsetX);
+    //     console.log(e.offsetY);
+    // })
 }

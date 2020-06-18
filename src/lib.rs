@@ -29,7 +29,7 @@ extern "C" {
 #[wasm_bindgen]
 pub struct Client {
     renderer: Renderer,
-    rot_counter: f64,
+    rot_counter: f32,
     triangle: Triangle,
 }
 
@@ -53,15 +53,13 @@ impl Client {
         self.renderer.clear(0x00);
 
         let projection = Matrix4::init_perspective(
-            (70.0f64).to_radians(),
-            self.renderer.width as f64 / self.renderer.height as f64,
+            (70.0f32).to_radians(),
+            self.renderer.width as f32 / self.renderer.height as f32,
             0.1,
             1000.,
         );
 
         self.rot_counter += 0.03;
-
-        // log(&self.rot_counter.to_string()[..]);
 
         let translation: Matrix4 = Matrix4::init_translation(0., 0., 3.);
         let rotation: Matrix4 = Matrix4::init_rotation(0., self.rot_counter, 0.);
@@ -72,12 +70,6 @@ impl Client {
             &mut self.triangle.mid_y_vert.transform(transform.clone()),
             &mut self.triangle.min_y_vert.transform(transform.clone()),
         );
-
-        // self.renderer.fill_triangle(
-        //     &mut self.triangle.max_y_vert.transform(transform.clone()),
-        //     &mut self.triangle.mid_y_vert.transform(transform.clone()),
-        //     &mut self.triangle.min_y_vert.transform(transform.clone()),
-        // );
 
         self.renderer.render();
     }

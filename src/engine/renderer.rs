@@ -85,7 +85,8 @@ impl Renderer {
 
     pub fn fill_triangle(&mut self, v1: &mut Vertex, v2: &mut Vertex, v3: &mut Vertex) {
         let screen_space_transform: Matrix4 =
-            Matrix4::init_screen_space_transform(self.width as f64 / 2., self.height as f64 / 2.);
+            Matrix4::init_screen_space_transform(self.width as f32 / 2., self.height as f32 / 2.);
+
         let mut min_y_vert: Vertex = v1
             .transform(screen_space_transform.clone())
             .perspective_divide();
@@ -128,72 +129,27 @@ impl Renderer {
         max_y_vert: Vertex,
         handedness: bool,
     ) {
-        let top_to_bottom: Edge = Edge::new(min_y_vert, max_y_vert);
-        let top_to_middle: Edge = Edge::new(min_y_vert, mid_y_vert);
-        let middle_to_bottom: Edge = Edge::new(mid_y_vert, max_y_vert);
+        let mut top_to_bottom: Edge = Edge::new(min_y_vert, max_y_vert);
+        let mut top_to_middle: Edge = Edge::new(min_y_vert, mid_y_vert);
+        let mut middle_to_bottom: Edge = Edge::new(mid_y_vert, max_y_vert);
 
-        self.scan_edges(top_to_bottom, top_to_middle, handedness);
-        self.scan_edges(top_to_bottom, middle_to_bottom, handedness);
+        self.scan_edges(&mut top_to_bottom, &mut top_to_middle, handedness);
 
-        // return;
-
-        // let mut left = top_to_bottom.clone();
-        // let mut right = top_to_middle.clone();
-
-        // if handedness {
-        //     let tmp: Edge = left;
-        //     left = right;
-        //     right = tmp;
-        // }
-
-        // let y_start: i32 = top_to_middle.get_y_start();
-        // let y_end: i32 = top_to_middle.get_y_end();
-
-        // for j in y_start..y_end {
-        //     self.draw_scan_line(left, right, j);
-        //     left.step();
-        //     right.step();
-        // }
-
-        // let mut left = top_to_bottom;
-        // let mut right = middle_to_bottom;
-
-        // // log(&left.to_string()[..]);
-        // if handedness {
-        //     let tmp: Edge = left;
-        //     left = right;
-        //     right = tmp;
-        // }
-
-        // let y_start = middle_to_bottom.get_y_start();
-        // let y_end = top_to_middle.get_y_end();
-
-        // // log(&y_start.to_string()[..]);
-        // // log(&y_end.to_string()[..]);
-
-        // for j in y_start..y_end {
-        //     self.draw_scan_line(left, right, j);
-        //     left.step();
-        //     right.step();
-        // }
+        self.scan_edges(&mut top_to_bottom, &mut middle_to_bottom, handedness);
     }
 
-    fn scan_edges(&mut self, a: Edge, b: Edge, handedness: bool) {
+    fn scan_edges(&mut self, a: &mut Edge, b: &mut Edge, handedness: bool) {
         let mut left = a;
         let mut right = b;
 
+        let y_start = right.get_y_start();
+        let y_end = right.get_y_end();
+
         if handedness {
-            let temp: Edge = left;
+            let temp = left;
             left = right;
             right = temp;
         }
-
-        let y_start = b.get_y_start();
-        let y_end = b.get_y_end();
-
-        log(&b.to_string()[..]);
-        // log(&y_end.to_string()[..]);
-        // log("...");
 
         for j in y_start..y_end {
             self.draw_scan_line(left, right, j);
@@ -202,7 +158,7 @@ impl Renderer {
         }
     }
 
-    fn draw_scan_line(&mut self, left: Edge, right: Edge, j: i32) {
+    fn draw_scan_line(&mut self, left: &mut Edge, right: &mut Edge, j: i32) {
         let x_min = left.get_x().ceil() as i32;
         let x_max = right.get_x().ceil() as i32;
 

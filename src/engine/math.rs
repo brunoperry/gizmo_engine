@@ -5,7 +5,7 @@ use std::ops::{Add, Div, Mul, Sub};
 */
 #[derive(Debug, Clone)]
 pub struct Matrix4 {
-    m: Vec<Vec<f64>>,
+    m: Vec<Vec<f32>>,
 }
 
 impl Matrix4 {
@@ -16,7 +16,7 @@ impl Matrix4 {
     }
 
     pub fn init_identity() -> Self {
-        let mut m_: Vec<Vec<f64>> = vec![vec![0.; 4]; 4];
+        let mut m_: Vec<Vec<f32>> = vec![vec![0.; 4]; 4];
         m_[0][0] = 1.;
         m_[0][1] = 0.;
         m_[0][2] = 0.;
@@ -36,17 +36,17 @@ impl Matrix4 {
 
         Self { m: m_ }
     }
-    pub fn init_screen_space_transform(half_width: f64, half_height: f64) -> Self {
+    pub fn init_screen_space_transform(half_width: f32, half_height: f32) -> Self {
         let mut m_ = vec![vec![0.; 4]; 4];
 
         m_[0][0] = half_width;
         m_[0][1] = 0.;
         m_[0][2] = 0.;
-        m_[0][3] = half_width;
+        m_[0][3] = half_width - 0.5;
         m_[1][0] = 0.;
         m_[1][1] = -half_height;
         m_[1][2] = 0.;
-        m_[1][3] = half_height;
+        m_[1][3] = half_height - 0.5;
         m_[2][0] = 0.;
         m_[2][1] = 0.;
         m_[2][2] = 1.;
@@ -58,7 +58,7 @@ impl Matrix4 {
         Self { m: m_ }
     }
 
-    pub fn init_translation(x: f64, y: f64, z: f64) -> Self {
+    pub fn init_translation(x: f32, y: f32, z: f32) -> Self {
         let mut m_ = vec![vec![0.; 4]; 4];
         m_[0][0] = 1.;
         m_[0][1] = 0.;
@@ -80,7 +80,7 @@ impl Matrix4 {
         Self { m: m_ }
     }
 
-    pub fn init_rotation_angle(x: f64, y: f64, z: f64, angle: f64) -> Self {
+    pub fn init_rotation_angle(x: f32, y: f32, z: f32, angle: f32) -> Self {
         let mut m_ = vec![vec![0.; 4]; 4];
 
         let sin = angle.sin();
@@ -106,7 +106,7 @@ impl Matrix4 {
         Self { m: m_ }
     }
 
-    pub fn init_rotation(x: f64, y: f64, z: f64) -> Self {
+    pub fn init_rotation(x: f32, y: f32, z: f32) -> Self {
         let mut rx = Matrix4::new();
         let mut ry = Matrix4::new();
         let mut rz = Matrix4::new();
@@ -204,7 +204,7 @@ impl Matrix4 {
         Matrix4::init_rotation_vec(f, u, r)
     }
 
-    pub fn init_scale(x: f64, y: f64, z: f64) -> Self {
+    pub fn init_scale(x: f32, y: f32, z: f32) -> Self {
         let mut m_ = vec![vec![0.; 4]; 4];
 
         m_[0][0] = x;
@@ -227,7 +227,7 @@ impl Matrix4 {
         Self { m: m_ }
     }
 
-    pub fn init_perspective(fov: f64, aspect_ratio: f64, z_near: f64, z_far: f64) -> Self {
+    pub fn init_perspective(fov: f32, aspect_ratio: f32, z_near: f32, z_far: f32) -> Self {
         let tan_half_fov = (fov / 2.).tan();
         let z_range = z_near - z_far;
 
@@ -254,12 +254,12 @@ impl Matrix4 {
     }
 
     pub fn init_orthographic(
-        left: f64,
-        right: f64,
-        bottom: f64,
-        top: f64,
-        near: f64,
-        far: f64,
+        left: f32,
+        right: f32,
+        bottom: f32,
+        top: f32,
+        near: f32,
+        far: f32,
     ) -> Self {
         let width = right - left;
         let height = top - bottom;
@@ -296,11 +296,11 @@ impl Matrix4 {
         )
     }
 
-    pub fn get(&mut self, x: usize, y: usize) -> f64 {
+    pub fn get(&mut self, x: usize, y: usize) -> f32 {
         self.m[x][y]
     }
 
-    pub fn set(&mut self, x: usize, y: usize, value: f64) {
+    pub fn set(&mut self, x: usize, y: usize, value: f32) {
         self.m[x][y] = value;
     }
 
@@ -368,14 +368,14 @@ impl Mul for Matrix4 {
 */
 #[derive(Debug, Clone, Copy)]
 pub struct Vector4 {
-    pub x: f64,
-    pub y: f64,
-    pub z: f64,
-    pub w: f64,
+    pub x: f32,
+    pub y: f32,
+    pub z: f32,
+    pub w: f32,
 }
 
 impl Vector4 {
-    pub fn new(x: f64, y: f64, z: f64, w: f64) -> Self {
+    pub fn new(x: f32, y: f32, z: f32, w: f32) -> Self {
         Self {
             x: x,
             y: y,
@@ -384,24 +384,24 @@ impl Vector4 {
         }
     }
 
-    pub fn length(&self) -> f64 {
+    pub fn length(&self) -> f32 {
         let val = self.x * self.x + self.y * self.y + self.z * self.z + self.w * self.w;
 
         val.sqrt()
     }
 
-    pub fn max(&self) -> f64 {
-        f64::max(self.x.max(self.y), self.z.max(self.w))
+    pub fn max(&self) -> f32 {
+        f32::max(self.x.max(self.y), self.z.max(self.w))
     }
 
-    pub fn dot(&self, r: Vector4) -> f64 {
+    pub fn dot(&self, r: Vector4) -> f32 {
         self.x * r.x + self.y * r.y + self.z * r.z + self.w * r.w
     }
 
     pub fn cross(&self, r: Vector4) -> Vector4 {
-        let x_: f64 = self.y * r.z - self.z * r.y;
-        let y_: f64 = self.z * r.x - self.x * r.z;
-        let z_: f64 = self.x * r.y - self.y * r.x;
+        let x_: f32 = self.y * r.z - self.z * r.y;
+        let y_: f32 = self.z * r.x - self.x * r.z;
+        let z_: f32 = self.x * r.y - self.y * r.x;
 
         Vector4::new(x_, y_, z_, 0.)
     }
@@ -420,18 +420,18 @@ impl Vector4 {
         Vector4::new(w.m_x, w.m_y, w.m_z, 0.)
     }
 
-    pub fn rotate(self, axis: Vector4, angle: f64) -> Vector4 {
-        let sin_angle: f64 = -angle.sin();
-        let cos_angle: f64 = -angle.cos();
+    pub fn rotate(self, axis: Vector4, angle: f32) -> Vector4 {
+        let sin_angle: f32 = -angle.sin();
+        let cos_angle: f32 = -angle.cos();
 
         let t: Vector4 = axis * sin_angle;
         let a: Vector4 = self.cross(t);
-        let b: f64 = self.dot(axis * (1. - cos_angle));
+        let b: f32 = self.dot(axis * (1. - cos_angle));
 
         a + (self * cos_angle) + b
     }
 
-    pub fn lerp(self, dest: Vector4, factor: f64) -> Vector4 {
+    pub fn lerp(self, dest: Vector4, factor: f32) -> Vector4 {
         dest - self * factor + self
     }
 
@@ -466,10 +466,10 @@ impl Add for Vector4 {
         }
     }
 }
-impl Add<f64> for Vector4 {
+impl Add<f32> for Vector4 {
     type Output = Vector4;
 
-    fn add(self, other: f64) -> Vector4 {
+    fn add(self, other: f32) -> Vector4 {
         Vector4 {
             x: self.x + other,
             y: self.y + other,
@@ -491,10 +491,10 @@ impl Sub for Vector4 {
         }
     }
 }
-impl Sub<f64> for Vector4 {
+impl Sub<f32> for Vector4 {
     type Output = Vector4;
 
-    fn sub(self, value: f64) -> Vector4 {
+    fn sub(self, value: f32) -> Vector4 {
         Vector4 {
             x: self.x - value,
             y: self.y - value,
@@ -516,10 +516,10 @@ impl Mul for Vector4 {
         }
     }
 }
-impl Mul<f64> for Vector4 {
+impl Mul<f32> for Vector4 {
     type Output = Self;
 
-    fn mul(self, value: f64) -> Self {
+    fn mul(self, value: f32) -> Self {
         Self {
             x: self.x * value,
             y: self.y * value,
@@ -541,10 +541,10 @@ impl Div for Vector4 {
         }
     }
 }
-impl Div<f64> for Vector4 {
+impl Div<f32> for Vector4 {
     type Output = Self;
 
-    fn div(self, value: f64) -> Self {
+    fn div(self, value: f32) -> Self {
         Self {
             x: self.x / value,
             y: self.y / value,
@@ -565,14 +565,14 @@ impl PartialEq for Vector4 {
 */
 #[derive(Debug, Clone, Copy)]
 struct Quaternion {
-    pub m_x: f64,
-    m_y: f64,
-    m_z: f64,
-    m_w: f64,
+    pub m_x: f32,
+    m_y: f32,
+    m_z: f32,
+    m_w: f32,
 }
 
 impl Quaternion {
-    pub fn new(x: f64, y: f64, z: f64, w: f64) -> Self {
+    pub fn new(x: f32, y: f32, z: f32, w: f32) -> Self {
         Self {
             m_x: x,
             m_y: y,
@@ -581,7 +581,7 @@ impl Quaternion {
         }
     }
 
-    pub fn new_vec_angle(axis: Vector4, angle: f64) -> Self {
+    pub fn new_vec_angle(axis: Vector4, angle: f32) -> Self {
         let sin_half_angle = (angle / 2.).sin();
         let cos_half_angle = (angle / 2.).cos();
 
@@ -596,10 +596,10 @@ impl Quaternion {
     pub fn new_mat(rot: &mut Matrix4) -> Self {
         let trace = rot.get(0, 0) + rot.get(1, 1) + rot.get(2, 2);
 
-        let mut mw: f64;
-        let mut mx: f64;
-        let mut my: f64;
-        let mut mz: f64;
+        let mut mw: f32;
+        let mut mx: f32;
+        let mut my: f32;
+        let mut mz: f32;
 
         if trace > 0. {
             let s = 0.5 / (trace + 1.).sqrt();
@@ -643,7 +643,7 @@ impl Quaternion {
         }
     }
 
-    pub fn length(&self) -> f64 {
+    pub fn length(&self) -> f32 {
         (self.m_x * self.m_x + self.m_y * self.m_y + self.m_z * self.m_z + self.m_w * self.m_w)
             .sqrt()
     }
@@ -686,11 +686,11 @@ impl Quaternion {
         Matrix4::init_rotation_vec(forward, up, right)
     }
 
-    pub fn dot(&self, r: Quaternion) -> f64 {
+    pub fn dot(&self, r: Quaternion) -> f32 {
         self.m_x * r.m_x + self.m_y * r.m_y + self.m_z * r.m_z + self.m_w * r.m_w
     }
 
-    pub fn n_lerp(self, dest: Quaternion, lerp_factor: f64, shortest: bool) -> Quaternion {
+    pub fn n_lerp(self, dest: Quaternion, lerp_factor: f32, shortest: bool) -> Quaternion {
         let mut corrected_dest = dest;
 
         if shortest && self.dot(dest) < 0. {
@@ -700,7 +700,7 @@ impl Quaternion {
         (corrected_dest - self * lerp_factor + self).normalized()
     }
 
-    pub fn s_lerp(self, dest: Quaternion, lerp_factor: f64, shortest: bool) -> Quaternion {
+    pub fn s_lerp(self, dest: Quaternion, lerp_factor: f32, shortest: bool) -> Quaternion {
         let EPSILON = 1e3;
 
         let mut cos = self.dot(dest);
@@ -749,7 +749,7 @@ impl Quaternion {
         Vector4::new(-1., 0., 0., 0.).rotate_quaternion(self)
     }
 
-    pub fn set_f(&mut self, x: f64, y: f64, z: f64, w: f64) {
+    pub fn set_f(&mut self, x: f32, y: f32, z: f32, w: f32) {
         self.m_x = x;
         self.m_y = y;
         self.m_z = z;
@@ -803,10 +803,10 @@ impl Mul for Quaternion {
         }
     }
 }
-impl Mul<f64> for Quaternion {
+impl Mul<f32> for Quaternion {
     type Output = Quaternion;
 
-    fn mul(self, value: f64) -> Quaternion {
+    fn mul(self, value: f32) -> Quaternion {
         Quaternion {
             m_x: self.m_x * value,
             m_y: self.m_y * value,
